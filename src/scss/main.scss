@@ -1,0 +1,9 @@
+@import "vars";
+@import "mixin";
+@import "fonts";
+@import "settings";
+@import "repeat-elem";
+
+//components
+@import "./components/header";
+@import "./components/ticTacToe";

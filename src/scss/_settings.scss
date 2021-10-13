@@ -1,0 +1,119 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--white-color);
+  font-family: "Roboto", sans-serif;
+  font-size: 20px;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.visually-hidden
+{
+    position: absolute !important;/*удаляет элемент из потока документа*/
+
+    overflow: hidden;/*cкрывает вылезающий за границы контент*/
+    clip: rect(1px 1px 1px 1px); /*Вырезает ту часть контента, которая должна отображаться. Для IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);/*вырезает ту часть контента, которая должна отображаться*/
+
+    width: 1px; /*минимально возможный размер ширины (некоторые скринридеры игнорируют элементы с нулевой высотой и шириной) */
+    height: 1px; /*минимально возможный размер высоты (некоторые скринридеры игнорируют элементы с нулевой высотой и шириной) */
+    padding: 0;/*убирает отступы*/
+
+    border: 0;/*убирает границы*/
+}
+
+.list-reset {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.btn-reset {
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.site-container {
+  overflow: hidden;
+}
+
+.js-validate-error-field {
+  border: 3px solid var(--gold-color) !important; 
+  color: var(--gold-color) !important;
+}
+
+.js-validate-error-label {
+  position: absolute;
+  top: -17px;
+  left: 5px;
+  font-size: 14px;
+  color: var(--gold-color) !important;
+} 
+
+.container {
+  margin: 0 auto;
+  padding: 0 15px;
+  width: var(--max-width-container);
+}
+
+@media(max-width: 1284px){
+    .container {
+    margin: 0 auto;
+    padding: 0 15px;//чтобы не прилипало содержимое
+    max-width: 1130px; //размер контейнера 
+  }
+}
+
+@media (max-width: 1130px){
+  .container {
+    margin: 0 auto;
+    padding: 0 15px;//чтобы не прилипало содержимое
+    max-width: 930px; //размер контейнера 
+  }
+}
+
+
+@media (max-width: 930px){
+  .container {
+    margin: 0 auto;
+    padding: 0 15px;//чтобы не прилипало содержимое
+    max-width: 630px; //размер контейнера 
+  }
+}
+
+@media (max-width: 630px){
+  .container {
+    margin: 0 auto;
+    padding: 0 15px;//чтобы не прилипало содержимое
+    max-width: 400px; //размер контейнера 
+  }
+}
+
+@media (max-width: 400px){
+  .container {
+    margin: 0 auto;
+    padding: 0 10px;//чтобы не прилипало содержимое
+    max-width: 300px; //размер контейнера 
+  }
+}
