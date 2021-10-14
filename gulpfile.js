@@ -76,7 +76,7 @@ function stylesBuild() {
 }
 
 function scripts() {
-	src(['./src/js/plugins/**.js', 'node_modules/swiper/swiper-bundle.min.js'])
+	src('./src/js/plugins/**.js')
 		.pipe(concat('plugins.js'))
 		.pipe(dest('./app/js/'))
 	return src(
