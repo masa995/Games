@@ -100,19 +100,10 @@ function turn(squareId, player, playerSymbol) {
 }
 
 function checkWin(board, player) {
-  let results = [];
-
-  for (let i = 0; i < board.length; i++) {
-    const e = board[i];
-    if (e === player) {
-      results = results.concat(i);
-    }
-  }
-
-  let plays = results;
+  let moves = playerMoves(board, player);
 
   for (let win of winCombos) {
-    if (win.every((elem) => plays.indexOf(elem) !== -1)) {
+    if (win.every((elem) => moves.indexOf(elem) !== -1)) {
       return true;
     }
   }
@@ -146,6 +137,18 @@ function emptySquares() {
   return origBoard.filter((cell) => typeof cell == 'number');
 }
 
+function playerMoves(board, player) {
+  let results = [];
+
+  for (let i = 0; i < board.length; i++) {
+    const e = board[i];
+    if (e === player) {
+      results = results.concat(i);
+    }
+  }
+  return results;
+}
+
 function bestSport() {
   if (keyLevel === 'easy') {
     return bestSportEasy();
@@ -160,6 +163,23 @@ function bestSport() {
 
 function bestSportEasy() {
   let arr = emptySquares();
+  let moves = playerMoves(origBoard, huPlayer);
+
+  for (let win of winCombos) {
+    if ((moves.includes(win[0])) && (moves.includes(win[1]))) {
+      if (arr.includes(win[2])) {
+        return win[2];
+      }
+    } else if ((moves.includes(win[0])) && (moves.includes(win[2]))) {
+      if (arr.includes(win[3])) {
+        return win[1];
+      }
+    } else if ((moves.includes(win[1])) && (moves.includes(win[2]))) {
+      if (arr.includes(win[0])) {
+        return win[0];
+      }
+    }
+  }
   let index = Math.floor(Math.random() * arr.length);
   return arr[index];
 }
