@@ -9,57 +9,8 @@
     flex-direction: column;
   }
 
-  &__btns-menu {
-    width: 100%;
-    padding: 10px 15px;
-    margin-bottom: 45px;
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-
   &__btn {
-    position: relative;
-    padding: 5px 15px;
-    font-size: 18px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    color: var(--white-color);
-    text-transform: uppercase;
-    background-color: hsl(195, 66%, 32%);
-  }
-
-  &__btn:after {
-    content: " ";
-    position: absolute;
-    height: 100%;
-    width: 0;
-    top: 0;
-    left: 0;
-    background-color: rgba(255, 255, 255, 0.4);
-    transition: all 0.7s ease;
-    mix-blend-mode: overlay;
-  }
-
-  &__btn:hover::after {
-    width: 100%;
-  }
-
-  &__btn:not(:last-child) {
-    margin-right: 10px;
-  }
-
-  &__btn:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-
-  &__btn:disabled:hover::after {
-    width: 0;
-  }
-
-  &__home {
-    display: inline-block;
-    background-color: #333;
+    background-color: #1c6d87;
   }
 
   &__restart {

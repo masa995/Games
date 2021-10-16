@@ -1,0 +1,14 @@
+.snake {
+  height: 100vh;
+  background: rgb(220, 227, 91);
+  background: linear-gradient(36deg, rgba(220, 227, 91, 1) 0%, rgba(69, 182, 73, 1) 100%);
+
+  &__restart {
+    background-color: #644172;
+  }
+
+  &__btn {
+    //background-color: #957A1E;
+    background-color: #8E941E;
+  }
+}
