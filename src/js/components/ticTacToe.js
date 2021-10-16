@@ -1,6 +1,11 @@
-const gameBoard = document.querySelector('.js-tic-tac-toe__game');
 const restartBtn = document.querySelector('.js-tic-tac-toe__restart');
+const newGameBtn = document.querySelector('.js-tic-tac-toe__new-game');
+const easyLevelBtn = document.querySelector('.js-tic-tac-toe__easy-level');
+const hardLevelBtn = document.querySelector('.js-tic-tac-toe__hard-level');
+const gameBoard = document.querySelector('.js-tic-tac-toe__game');
 const winText = document.querySelector('.js-tic-tac-toe__win-text');
+let cells;
+let keyLevel = 'easy';
 const huPlayer = 'X';
 const aiPlayer = 'O';
 const huSymbol = `<svg class="cross">
@@ -23,57 +28,74 @@ const winCombos = [
   [6, 4, 2]
 ];
 
-const size = 3;
+initGame();
 
-const cells = initGame();
+newGameBtn.addEventListener('click', () => {
+  easyLevelBtn.removeAttribute('disabled');
+  hardLevelBtn.removeAttribute('disabled');
+  newGameBtn.setAttribute('disabled', 'disabled');
+  restartBtn.setAttribute('disabled', 'disabled');
+})
+
+easyLevelBtn.addEventListener('click', () => {
+  checkLevel('easy');
+})
+
+hardLevelBtn.addEventListener('click', () => {
+  checkLevel('hard');
+})
 
 restartBtn.addEventListener('click', () => {
-  startGame(cells);
-});
+  startGame();
+})
+
+function checkLevel(level) {
+  keyLevel = level;
+  startGame();
+  restartBtn.removeAttribute('disabled');
+  newGameBtn.removeAttribute('disabled');
+  easyLevelBtn.setAttribute('disabled', 'disabled');
+  hardLevelBtn.setAttribute('disabled', 'disabled');
+}
 
 function initGame() {
-  for (let i = 0; i < size * size; i++) {
+  for (let i = 0; i < 9; i++) {
     const cell = document.createElement('div');
     cell.setAttribute('id', i);
     cell.classList.add('tic-tac-toe__cell');
     gameBoard.appendChild(cell);
   }
-
-  const resultCells = document.querySelectorAll('.tic-tac-toe__cell');
-  startGame(resultCells);
-
-  return resultCells;
+  cells = document.querySelectorAll('.tic-tac-toe__cell');
 }
 
-
-function startGame(cellsGames) {
-  origBoard = Array.from(Array(9).keys());
-
-  for (let i = 0; i < cellsGames.length; i++) {
-    cellsGames[i].innerHTML = '';
-    cellsGames[i].classList.remove('mouse');
-    cellsGames[i].addEventListener('click', (e) => {
-      turnClick(e);
-    });
+function startGame() {
+  origBoard = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].innerHTML = '';
+    cells[i].classList.add('mouse');
+    cells[i].addEventListener('click', turnClick);
   }
-  winText.textContent = '';
+  winText.innerText = '';
 }
 
 function turnClick(event) {
   if (typeof origBoard[event.target.id] == 'number') {
     turn(event.target.id, huPlayer, huSymbol);
-    if (!checkTie()) {
+
+    if ((!checkTie()) && (!checkWin(origBoard, huPlayer))) {
       turn(bestSport(), aiPlayer, aiSymbol);
     }
   }
 }
 
-function turn(cellId, player, whoSymbol) {
-  origBoard[cellId] = player;
-  document.getElementById(cellId).innerHTML = whoSymbol
+function turn(squareId, player, playerSymbol) {
+  origBoard[squareId] = player;
+  document.getElementById(squareId).innerHTML = playerSymbol;
+  cells[squareId].classList.remove('mouse');
+
   let gameWon = checkWin(origBoard, player);
   if (gameWon) {
-    gameOver(gameWon, cells);
+    gameOver(player);
   }
 }
 
@@ -88,38 +110,13 @@ function checkWin(board, player) {
   }
 
   let plays = results;
-  let gameWon = null;
 
-  for (let [index, win] of winCombos.entries()) {
-
-    if (win.every(elem => plays.indexOf(elem) !== -1)) {
-      gameWon = { index: index, player: player }; //в gameWon - хранится объект {index : номер выйграшной комбинации; player: знак игрока(O или X)}
-      // console.log(gameWon);
-      break;
+  for (let win of winCombos) {
+    if (win.every((elem) => plays.indexOf(elem) !== -1)) {
+      return true;
     }
   }
-  return gameWon;
-}
-
-function gameOver(gameWon, cellsGames) {
-
-  for (let i = 0; i < cellsGames.length; i++) {
-    cellsGames[i].removeEventListener('click', turnClick);
-  }
-  declareWinner(gameWon == huPlayer ? 'Вы победили' : 'Вы проиграли');
-}
-
-
-function declareWinner(who = 'неизвестно') { //ф-ция выводит результат игры 
-  winText.textContent = who;
-}
-
-function emptySquares() {
-  return origBoard.filter(item => typeof item == 'number');
-}
-
-function bestSport() {
-  return emptySquares()[0]; //первый элемент из доступных ячеек
+  return false;
 }
 
 function checkTie() {
@@ -127,8 +124,99 @@ function checkTie() {
     for (let i = 0; i < cells.length; i++) {
       cells[i].removeEventListener('click', turnClick);
     }
-    declareWinner('Ничья');
+    setTimeout(() => declareWinner('Ничья'), 1500);
     return true;
   }
   return false;
+}
+
+function gameOver(player) {
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].removeEventListener('click', turnClick);
+    cells[i].classList.remove('mouse');
+  }
+  setTimeout(() => declareWinner(player === huPlayer ? 'Вы победили' : 'Вы проиграли'), 1500);
+}
+
+function declareWinner(who) {
+  winText.innerText = who;
+}
+
+function emptySquares() {
+  return origBoard.filter((cell) => typeof cell == 'number');
+}
+
+function bestSport() {
+  if (keyLevel === 'easy') {
+    return bestSportEasy();
+  }
+  else if (keyLevel === 'hard') {
+    return bestSportHard();
+  }
+  else {
+    return bestSportHard();
+  }
+}
+
+function bestSportEasy() {
+  let arr = emptySquares();
+  let index = Math.floor(Math.random() * arr.length);
+  return arr[index];
+}
+
+function bestSportHard() {
+  let arr = minimax(origBoard, aiPlayer);
+  return arr.index;
+}
+
+function minimax(newBoard, player) {
+  let availSpots = emptySquares();
+
+  if (checkWin(newBoard, huPlayer)) {
+    return { score: -10 };
+  } else if (checkWin(newBoard, aiPlayer)) {
+    return { score: 10 };
+  } else if (availSpots.length === 0) {
+    return { score: 0 };
+  }
+  let moves = [];
+
+  for (let i = 0; i < availSpots.length; i++) {
+    let move = [];
+
+    move.index = newBoard[availSpots[i]];
+    newBoard[availSpots[i]] = player;
+
+    if (player == aiPlayer) {
+      let result = minimax(newBoard, huPlayer);
+      move.score = result.score;
+    } else {
+      let result = minimax(newBoard, aiPlayer);
+      move.score = result.score;
+    }
+
+    newBoard[availSpots[i]] = move.index;
+    moves.push(move);
+  }
+
+  let bestMove;
+
+  if (player === aiPlayer) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  }
+  return moves[bestMove];
 }
