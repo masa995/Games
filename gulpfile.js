@@ -195,7 +195,7 @@ function fonts() {
 }
 
 function watchFiles() {
-	watch('./src/index.html', html);
+	watch('./src/*.html', html);
 	watch('./src/partHTML/**/*.html', html);
 	watch('./src/scss/**/*.scss', styles);
 	watch('./src/js/**/*.js', scripts);

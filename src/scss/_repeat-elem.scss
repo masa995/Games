@@ -1,4 +1,8 @@
 .btns-menu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: space-between;
   width: 100%;
   padding: 10px 15px;
   margin-bottom: 45px;
@@ -7,6 +11,7 @@
 
 .btn {
   position: relative;
+  margin: 5px 0;
   padding: 5px 15px;
   font-size: 18px;
   font-weight: 700;
@@ -45,6 +50,10 @@
 
 .btn:disabled:hover::after {
   width: 0;
+}
+
+.btn-ruls {
+  background-color: #333;
 }
 
 .link {

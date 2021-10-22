@@ -28,26 +28,28 @@ const winCombos = [
   [6, 4, 2]
 ];
 
-initGame();
+if (gameBoard !== null) {
+  initGame();
 
-newGameBtn.addEventListener('click', () => {
-  easyLevelBtn.removeAttribute('disabled');
-  hardLevelBtn.removeAttribute('disabled');
-  newGameBtn.setAttribute('disabled', 'disabled');
-  restartBtn.setAttribute('disabled', 'disabled');
-})
+  newGameBtn.addEventListener('click', () => {
+    easyLevelBtn.removeAttribute('disabled');
+    hardLevelBtn.removeAttribute('disabled');
+    newGameBtn.setAttribute('disabled', 'disabled');
+    restartBtn.setAttribute('disabled', 'disabled');
+  })
 
-easyLevelBtn.addEventListener('click', () => {
-  checkLevel('easy');
-})
+  easyLevelBtn.addEventListener('click', () => {
+    checkLevel('easy');
+  })
 
-hardLevelBtn.addEventListener('click', () => {
-  checkLevel('hard');
-})
+  hardLevelBtn.addEventListener('click', () => {
+    checkLevel('hard');
+  })
 
-restartBtn.addEventListener('click', () => {
-  startGame();
-})
+  restartBtn.addEventListener('click', () => {
+    startGame();
+  })
+}
 
 function checkLevel(level) {
   keyLevel = level;

@@ -17,15 +17,21 @@
         <div class="btns-menu tic-tac-toe__btns-menu">
           <a href="index.html" class="link home tic-tac-toe__home" title="перейти на главную">
             << </a>
-              <button class="btn tic-tac-toe__restart js-tic-tac-toe__restart" disabled>Играть
+
+              <button class="btn btn-ruls tic-tac-toe__ruls js-btn-ruls" type="button"
+                data-ruls="ticTacToe">Правила</button>
+
+              <button class="btn tic-tac-toe__restart js-tic-tac-toe__restart" type="button" disabled>Играть
                 заново</button>
 
-              <button class="btn tic-tac-toe__btn tic-tac-toe__new-game js-tic-tac-toe__new-game">Новая игра</button>
+              <button class="btn tic-tac-toe__btn tic-tac-toe__new-game js-tic-tac-toe__new-game" type="button">Новая
+                игра</button>
 
-              <button class="btn tic-tac-toe__btn tic-tac-toe__easy-level js-tic-tac-toe__easy-level" disabled>Легкий
-                уровень</button>
+              <button class="btn tic-tac-toe__btn tic-tac-toe__easy-level js-tic-tac-toe__easy-level" type="button"
+                disabled>Легкий уровень</button>
 
-              <button class="btn  tic-tac-toe__btn tic-tac-toe__hard-level js-tic-tac-toe__hard-level" disabled>Сложный
+              <button class="btn tic-tac-toe__btn tic-tac-toe__hard-level js-tic-tac-toe__hard-level" type="button"
+                disabled>Сложный
                 уровень</button>
         </div>
         <div class="tic-tac-toe__game js-tic-tac-toe__game">
@@ -33,7 +39,7 @@
         <p class="tic-tac-toe__win-text js-tic-tac-toe__win-text"></p>
       </div>
     </main>
-
+    @@include('partHTML/popup.html')
   </div>
 
   <script src="js/plugins.js"></script>
