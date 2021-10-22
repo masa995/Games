@@ -1,0 +1,26 @@
+.main {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(120, 42, 120);
+  background: linear-gradient(285deg, rgb(129, 50, 129) 0%, rgb(245, 144, 86) 63%, rgb(233, 175, 67) 98%);
+
+  &__item {
+    width: 100%;
+  }
+
+  &__item:not(:last-child) {
+    margin-bottom: 20px;
+  }
+
+  &__link {
+    width: 100%;
+    padding: 15px 25px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 900;
+    background-color: rgba(255, 255, 255, 0.4);
+    color: #333;
+  }
+}

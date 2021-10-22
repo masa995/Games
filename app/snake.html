@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Змейка</title>
+  <link rel="stylesheet" href="css/plugins.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+  <div class="site-container">
+    <main class="snake">
+      <div class="snake__box">
+        <div class="btns-menu snake__btns-menu">
+          <a href="index.html" class="link home snake__home" title="перейти на главную">
+            << </a>
+              <button class="btn snake__restart js-snake__restart">Играть
+                заново</button>
+
+              <button class="btn snake__btn snake__new-game js-snake__new-game">Новая игра</button>
+
+              <button class="btn snake__btn snake__easy-level js-snake__easy-level" disabled>Легкий
+                уровень</button>
+
+              <button class="btn snake__btn snake__hard-level js-snake__hard-level" disabled>Сложный
+                уровень</button>
+        </div>
+        <canvas class="snake__game js-snake__game" width="400" height="400">
+        </canvas>
+        <p class="snake__win-text js-snake__win-text"></p>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
