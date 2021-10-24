@@ -6,8 +6,10 @@ const dataRules = [
 
   {
     textRules: `<p>Змейка</p>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maxime necessitatibus voluptate molestias eaque iste
-                eum corrupti tenetur, illo nihil illum natus dolore perspiciatis ducimus eius exercitationem laboriosam tempore
-                reiciendis quaerat.</p>`
+                <p>Цель игры заключается в том, чтобы змейка съела как можно больше ягод. После каждого съеденной ягоды количество очков и размер змейки увеличивается.</p>
+                <p>Если змейка врежется саму в себя или в препятствие (серые кубы), то игра заканчиватся.</p>
+                <p>Управление осуществляется стрелочками.</p>`
+
+
   }
 ]
