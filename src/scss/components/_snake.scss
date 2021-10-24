@@ -1,7 +1,5 @@
 .snake {
   height: 100vh;
-  // background: rgb(220, 227, 91);
-  // background: linear-gradient(36deg, rgba(220, 227, 91, 1) 0%, rgba(69, 182, 73, 1) 100%);
   background: rgb(34, 154, 135);
   background: linear-gradient(180deg, rgba(207, 246, 145, 1) 0%, rgb(31, 139, 123) 63%, rgb(52, 159, 221) 100%);
   display: flex;
@@ -16,7 +14,13 @@
     background-color: #ce9360;
   }
 
-  &__game {
-    // background-color: #333;
+  &__score-text {
+    margin: 25px 0 0;
+    font-family: "Roboto", serif;
+    font-size: 30px;
+    text-align: center;
+    color: var(--white-color);
+    font-weight: 900;
+    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.5);
   }
 }

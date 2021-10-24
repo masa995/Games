@@ -19,7 +19,7 @@
 
             <button class="btn btn-ruls snake__ruls js-btn-ruls" type="button" data-ruls="snake">Правила</button>
 
-            <button class="btn snake__restart js-snake__restart" type="button">Играть
+            <button class="btn snake__restart js-snake__restart" type="button" disabled>Играть
               заново</button>
 
             <button class="btn snake__btn snake__new-game js-snake__new-game" type="button">Новая игра</button>
@@ -31,7 +31,7 @@
               уровень</button>
       </div>
       <canvas class="snake__game js-snake__game"></canvas>
-      <p class="snake__win-text js-snake__win-text"></p>
+      <p class="snake__score-text js-snake__score-text">Счет: 0</p>
     </main>
     @@include('partHTML/popup.html')
   </div>

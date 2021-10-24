@@ -5,7 +5,7 @@ const hardLevelBtn = document.querySelector('.js-tic-tac-toe__hard-level');
 const gameBoard = document.querySelector('.js-tic-tac-toe__game');
 const winText = document.querySelector('.js-tic-tac-toe__win-text');
 let cells;
-let keyLevel = 'easy';
+let keyLevelTicTacToe = 'easy';
 const huPlayer = 'X';
 const aiPlayer = 'O';
 const huSymbol = `<svg class="cross">
@@ -29,7 +29,7 @@ const winCombos = [
 ];
 
 if (gameBoard !== null) {
-  initGame();
+  initTicTacToeGame();
 
   newGameBtn.addEventListener('click', () => {
     easyLevelBtn.removeAttribute('disabled');
@@ -39,28 +39,28 @@ if (gameBoard !== null) {
   })
 
   easyLevelBtn.addEventListener('click', () => {
-    checkLevel('easy');
+    checkLevelTicTacToe('easy');
   })
 
   hardLevelBtn.addEventListener('click', () => {
-    checkLevel('hard');
+    checkLevelTicTacToe('hard');
   })
 
   restartBtn.addEventListener('click', () => {
-    startGame();
+    startTicTacToeGame();
   })
 }
 
-function checkLevel(level) {
-  keyLevel = level;
-  startGame();
+function checkLevelTicTacToe(level) {
+  keyLevelTicTacToe = level;
+  startTicTacToeGame();
   restartBtn.removeAttribute('disabled');
   newGameBtn.removeAttribute('disabled');
   easyLevelBtn.setAttribute('disabled', 'disabled');
   hardLevelBtn.setAttribute('disabled', 'disabled');
 }
 
-function initGame() {
+function initTicTacToeGame() {
   for (let i = 0; i < 9; i++) {
     const cell = document.createElement('div');
     cell.setAttribute('id', i);
@@ -70,7 +70,7 @@ function initGame() {
   cells = document.querySelectorAll('.tic-tac-toe__cell');
 }
 
-function startGame() {
+function startTicTacToeGame() {
   origBoard = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   for (let i = 0; i < cells.length; i++) {
     cells[i].innerHTML = '';
@@ -85,7 +85,8 @@ function turnClick(event) {
     turn(event.target.id, huPlayer, huSymbol);
 
     if ((!checkTie()) && (!checkWin(origBoard, huPlayer))) {
-      turn(bestSport(), aiPlayer, aiSymbol);
+      turn(TicTacToeBestSport(), aiPlayer, aiSymbol);
+
     }
   }
 }
@@ -151,19 +152,19 @@ function playerMoves(board, player) {
   return results;
 }
 
-function bestSport() {
-  if (keyLevel === 'easy') {
-    return bestSportEasy();
+function TicTacToeBestSport() {
+  if (keyLevelTicTacToe === 'easy') {
+    return TicTacToeBestSportEasy();
   }
-  else if (keyLevel === 'hard') {
-    return bestSportHard();
+  else if (keyLevelTicTacToe === 'hard') {
+    return TicTacToeBestSportHard();
   }
   else {
-    return bestSportHard();
+    return TicTacToeBestSportHard();
   }
 }
 
-function bestSportEasy() {
+function TicTacToeBestSportEasy() {
   let arr = emptySquares();
   let moves = playerMoves(origBoard, huPlayer);
 
@@ -186,7 +187,7 @@ function bestSportEasy() {
   return arr[index];
 }
 
-function bestSportHard() {
+function TicTacToeBestSportHard() {
   let arr = minimax(origBoard, aiPlayer);
   return arr.index;
 }
