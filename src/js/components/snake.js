@@ -122,6 +122,8 @@ if (main !== null) {
     hardLevelBtnSnake.removeAttribute('disabled');
     newGameBtnSnake.setAttribute('disabled', 'disabled');
     restartBtnSnake.setAttribute('disabled', 'disabled');
+
+    document.addEventListener('keydown', controlArrows);
   })
 
   easyLevelBtnSnake.addEventListener('click', () => {
@@ -133,42 +135,10 @@ if (main !== null) {
   })
 
   restartBtnSnake.addEventListener('click', () => {
-    refreshSnakeGame()
+    refreshSnakeGame();
+    document.addEventListener('keydown', controlArrows);
+
   })
-
-  document.addEventListener('keydown', function (e) {
-    if (e.code === 'ArrowUp') {
-      if (keyDirection === null || keyDirection !== 'down') {
-        snake.dx = 0;
-        snake.dy = -cell;
-        keyDirection = 'up';
-      }
-    }
-
-    if (e.code === 'ArrowDown') {
-      if (keyDirection === null || keyDirection !== 'up') {
-        snake.dx = 0;
-        snake.dy = cell;
-        keyDirection = 'down';
-      }
-    }
-
-    if (e.code === 'ArrowLeft') {
-      if (keyDirection === null || keyDirection !== 'right') {
-        snake.dx = -cell;
-        snake.dy = 0;
-        keyDirection = 'left';
-      }
-    }
-
-    if (e.code === 'ArrowRight') {
-      if (keyDirection === null || keyDirection !== 'left') {
-        snake.dx = cell;
-        snake.dy = 0;
-        keyDirection = 'right';
-      }
-    }
-  });
 }
 
 function renderGameBoard(colum, row, cell, indent, context) {
@@ -217,6 +187,7 @@ function crachSnake() {
     for (let i = index + 1; i < snake.tails.length; i++) {
       if (el.x === snake.tails[i].x && el.y === snake.tails[i].y) {
         refreshSnakeGame();
+        document.removeEventListener('keydown', controlArrows);
       }
     }
   });
@@ -225,6 +196,7 @@ function crachSnake() {
   mapLevelSnake.forEach((el) => {
     if (el.x === snake.tails[0].x && el.y === snake.tails[0].y) {
       refreshSnakeGame();
+      document.removeEventListener('keydown', controlArrows);
     }
   });
 }
@@ -285,7 +257,6 @@ function positionBerry() {
       coordinatsBerry();
     }
   }
-
 }
 
 function drawScoreSnake(num) {
@@ -326,3 +297,36 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+function controlArrows(e) {
+  if (e.code === 'ArrowUp') {
+    if (keyDirection === null || keyDirection !== 'down') {
+      snake.dx = 0;
+      snake.dy = -cell;
+      keyDirection = 'up';
+    }
+  }
+
+  if (e.code === 'ArrowDown') {
+    if (keyDirection === null || keyDirection !== 'up') {
+      snake.dx = 0;
+      snake.dy = cell;
+      keyDirection = 'down';
+    }
+  }
+
+  if (e.code === 'ArrowLeft') {
+    if (keyDirection === null || keyDirection !== 'right') {
+      snake.dx = -cell;
+      snake.dy = 0;
+      keyDirection = 'left';
+    }
+  }
+
+  if (e.code === 'ArrowRight') {
+    if (keyDirection === null || keyDirection !== 'left') {
+      snake.dx = cell;
+      snake.dy = 0;
+      keyDirection = 'right';
+    }
+  }
+}
