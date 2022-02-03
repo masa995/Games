@@ -1,332 +1,404 @@
-const main = document.querySelector('.js-snake');
-const restartBtnSnake = document.querySelector('.js-snake__restart');
-const newGameBtnSnake = document.querySelector('.js-snake__new-game');
-const easyLevelBtnSnake = document.querySelector('.js-snake__easy-level');
-const hardLevelBtnSnake = document.querySelector('.js-snake__hard-level');
-let score;
-let widthCanvas;
-let heightCanvas;
-
-let widthGameCells;
-let heightGameCells;
-
-let rowGame;
-let columGame;
-
-let mapLevelSnake;
-
-let keyDirection = null;
-const cell = 25;
-const indentCell = 2;
-
-const pi = Math.PI;
-let snakeScore = 0;
-
-const animationSnake = {
-  fps: 300,
-  startTime: 0,
-  currentTime: 0,
-  time: 0,
-  currentSecond: 0,
-  speed: 0
-}
-
-const snake = {
-  x: 0,
-  y: cell * 3,
-  dx: cell,
-  dy: 0,
-  tails: [{ x: 0, y: cell * 3 }],
-  maxTails: 3
-}
-
-const berrySnake = {
-  radiusBerry: cell / 3,
-  x: 0,
-  y: cell
-}
-
-const barrierSnake = {
-  levelEasy: [],
-  levelHard: []
-}
-
-if (main !== null) {
-  const canvas = document.querySelector('.js-snake__game');
-  const ctx = canvas.getContext('2d');
-  score = document.querySelector('.js-snake__score-text');
-
-  widthCanvas = main.clientWidth / 2;
-  heightCanvas = main.clientHeight - 300;
-
-  widthGameCells = roundCell(widthCanvas, cell);
-  heightGameCells = roundCell(heightCanvas, cell);
-
-  canvas.setAttribute('width', widthGameCells);
-  canvas.setAttribute('height', heightGameCells);
-
-  rowGame = widthGameCells / cell;
-  columGame = heightGameCells / cell;
-
-  barrierSnake.levelHard = [
-    { x: 0, y: 0 },
-    { x: 0, y: cell },
-    { x: cell, y: 0 },
-    { x: cell, y: cell },
-    { x: 0, y: heightGameCells - cell },
-    { x: 0, y: heightGameCells - cell * 2 },
-    { x: cell, y: heightGameCells - cell },
-    { x: cell, y: heightGameCells - cell * 2 },
-    { x: widthGameCells - cell, y: heightGameCells - cell },
-    { x: widthGameCells - cell, y: heightGameCells - cell * 2 },
-    { x: widthGameCells - cell * 2, y: heightGameCells - cell },
-    { x: widthGameCells - cell * 2, y: heightGameCells - cell * 2 },
-    { x: widthGameCells - cell, y: 0 },
-    { x: widthGameCells - cell * 2, y: 0 },
-    { x: widthGameCells - cell, y: cell },
-    { x: widthGameCells - cell * 2, y: cell }
-  ]
-
-  mapLevelSnake = barrierSnake.levelEasy;
-
-  positionBerry();
-
-  //animation
-  requestAnimationFrame(gameLoopSnake);
-
-  function gameLoopSnake() {
-    requestAnimationFrame(gameLoopSnake);
-
-    if (animationSnake.startTime === 0) {
-      animationSnake.startTime = new Date().getTime();
-    }
-
-    animationSnake.currentTime = new Date().getTime();
-    animationSnake.time = animationSnake.currentTime - animationSnake.startTime;
-    animationSnake.currentSecond = Math.floor(animationSnake.time / (animationSnake.fps - animationSnake.speed));
-
-    if (animationSnake.currentSecond > 0) {
-      animationSnake.startTime = 0;
-
-      ctx.clearRect(0, 0, widthGameCells, heightGameCells);
-
-      renderGameBoard(columGame, rowGame, cell, indentCell, ctx);
-      drawBarrier(ctx, mapLevelSnake);
-      drawSnake(ctx);
-      drawBerry(ctx);
-    }
-  }
-
-  newGameBtnSnake.addEventListener('click', () => {
-    easyLevelBtnSnake.removeAttribute('disabled');
-    hardLevelBtnSnake.removeAttribute('disabled');
-    newGameBtnSnake.setAttribute('disabled', 'disabled');
-    restartBtnSnake.setAttribute('disabled', 'disabled');
-
-    document.addEventListener('keydown', controlArrows);
-  })
-
-  easyLevelBtnSnake.addEventListener('click', () => {
-    checkLevelSnake(barrierSnake.levelEasy);
-  })
-
-  hardLevelBtnSnake.addEventListener('click', () => {
-    checkLevelSnake(barrierSnake.levelHard);
-  })
-
-  restartBtnSnake.addEventListener('click', () => {
-    refreshSnakeGame();
-    document.addEventListener('keydown', controlArrows);
-
-  })
-}
-
-function renderGameBoard(colum, row, cell, indent, context) {
-  for (let y = 0; y < colum; y++) {
-    for (let x = 0; x < row; x++) {
-      context.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      context.fillRect(x * cell, y * cell, cell - indent, cell - indent);
-    }
+'use strict'
+class Canvas {
+  constructor(canvasEl) {
+    this.canvas = document.querySelector(canvasEl);
+    this.context = this.canvas.getContext('2d');
   }
 }
 
-function drawBarrier(context, level) {
-  level.forEach((el) => {
-    context.fillStyle = '#333333';
-    context.fillRect(el.x, el.y, cell - indentCell, cell - indentCell);
-  });
-}
+class Board {
+  constructor(mainEl, scoreEl, canvas, cell) {
+    this.mainEl = document.querySelector(mainEl);
+    this.scoreEl = document.querySelector(scoreEl);
 
-function drawSnake(context) {
-  snake.x = snake.x + snake.dx;
-  snake.y = snake.y + snake.dy;
+    this.cell = cell;
+    this.indentCell = 2;
+    this.score = 0;
+    this.context = canvas.context;
+    this.canvas = canvas.canvas;
 
-  collisionBorder(widthGameCells, heightGameCells, cell);
+    this.widthCanvas = this.mainEl.clientWidth / 2;
+    this.heightCanvas = this.mainEl.clientHeight - 300;
 
-  snake.tails.unshift({ x: snake.x, y: snake.y });
+    this.widthGame = this.roundCell(this.widthCanvas, this.cell);
+    this.heightGame = this.roundCell(this.heightCanvas, this.cell);
+    this.canvas.setAttribute('width', this.widthGame);
+    this.canvas.setAttribute('height', this.heightGame);
 
-  if (snake.tails.length > snake.maxTails) {
-    snake.tails.pop();
+    this.rowGame = this.widthGame / this.cell;
+    this.columnGame = this.heightGame / this.cell;
+
+    this.barrier = {
+      levelEasy: [],
+      levelHard: [
+        { x: 0, y: 0 },
+        { x: 0, y: this.cell },
+        { x: this.cell, y: 0 },
+        { x: this.cell, y: this.cell },
+        { x: 0, y: this.heightGame - this.cell },
+        { x: 0, y: this.heightGame - this.cell * 2 },
+        { x: this.cell, y: this.heightGame - this.cell },
+        { x: this.cell, y: this.heightGame - this.cell * 2 },
+        { x: this.widthGame - this.cell, y: this.heightGame - this.cell },
+        { x: this.widthGame - this.cell, y: this.heightGame - this.cell * 2 },
+        { x: this.widthGame - this.cell * 2, y: this.heightGame - this.cell },
+        { x: this.widthGame - this.cell * 2, y: this.heightGame - this.cell * 2 },
+        { x: this.widthGame - this.cell, y: 0 },
+        { x: this.widthGame - this.cell * 2, y: 0 },
+        { x: this.widthGame - this.cell, y: this.cell },
+        { x: this.widthGame - this.cell * 2, y: this.cell }
+      ]
+    }
+    this.barrierMap = this.barrier.levelEasy;
+
+    this.drawGameBoard();
   }
 
-  snake.tails.forEach((el, index) => {
-    if (index == 0) {
-      context.fillStyle = '#333333';
-    } else {
-      context.fillStyle = '#555555';
-    }
-    context.fillRect(el.x, el.y, cell - indentCell, cell - indentCell);
+  updateMap(level) {
+    this.barrierMap = level;
+  }
 
-    crachSnake();
-    eatSnake();
-  })
-}
+  updateCell(num) {
+    this.cell = num;
+  }
 
-function crachSnake() {
-  snake.tails.forEach((el, index) => {
-    for (let i = index + 1; i < snake.tails.length; i++) {
-      if (el.x === snake.tails[i].x && el.y === snake.tails[i].y) {
-        refreshSnakeGame();
-        document.removeEventListener('keydown', controlArrows);
+  roundCell(num, cell) {
+    return Math.round(num / cell) * cell;
+  }
+
+  drawGameBoard() {
+    for (let y = 0; y < this.columnGame; y++) {
+      for (let x = 0; x < this.rowGame; x++) {
+        this.context.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        this.context.fillRect(x * this.cell, y * this.cell, this.cell - this.indentCell, this.cell - this.indentCell);
       }
     }
-  });
 
+    this.drawScore(this.score);
+    this.drawBarrier();
+  }
 
-  mapLevelSnake.forEach((el) => {
-    if (el.x === snake.tails[0].x && el.y === snake.tails[0].y) {
-      refreshSnakeGame();
-      document.removeEventListener('keydown', controlArrows);
+  drawBarrier() {
+    this.barrierMap.forEach((el) => {
+      this.context.fillStyle = '#333333';
+      this.context.fillRect(el.x, el.y, this.cell - this.indentCell, this.cell - this.indentCell);
+    });
+  }
+
+  drawScore() {
+    return this.scoreEl.textContent = `Счет: ${this.score}`;
+  }
+
+  zeroScore() {
+    this.score = 0;
+    return this.scoreEl.textContent = `Счет: 0`;
+  }
+
+  updateScore(num) {
+    this.score++;
+    this.drawScore();
+  }
+}
+
+class Berry {
+  constructor(canvas, board) {
+    this.context = canvas.context;
+    this.cell = board.cell;
+    this.radius = this.cell / 3;
+    this.rowGame = board.rowGame;
+    this.columnGame = board.columnGame;
+    this.pi = Math.PI;
+    this.x;
+    this.y;
+  }
+
+  draw() {
+    this.context.beginPath();
+    this.context.fillStyle = "#9f5e7e";
+    this.context.arc(this.x + (this.cell / 2), this.y + (this.cell / 2), this.radius, 0, this.pi * 2);
+    this.context.fill();
+    this.context.closePath();
+  }
+
+  coordinats() {
+    this.x = getRandomInt(0, this.rowGame) * this.cell;
+    this.y = getRandomInt(0, this.columnGame) * this.cell;
+  }
+
+  newPosition(snakeTail, barrierMap) {
+    this.coordinats();
+
+    snakeTail.forEach((elem) => {
+      if (elem.x === this.x && elem.y === this.y) {
+        this.coordinats();
+      }
+    });
+
+    if (barrierMap.length > 0) {
+      barrierMap.forEach((elem) => {
+        if (elem.x === this.x && elem.y === this.y) {
+          this.coordinats();
+        }
+      });
     }
-  });
-}
-
-function eatSnake() {
-  snake.tails.forEach((el) => {
-    if (el.x === berrySnake.x && el.y === berrySnake.y) {
-      snake.maxTails++;
-      animationSnake.speed = animationSnake.speed + 0.5;
-      snakeScore++;
-
-      positionBerry();
-      drawScoreSnake(snakeScore);
-    }
-  });
-}
-
-function collisionBorder(width, height, cell) {
-  if (snake.x < 0) {
-    snake.x = width - cell;
-  }
-  if (snake.x >= width) {
-    snake.x = 0;
-  }
-
-  if (snake.y < 0) {
-    snake.y = height - cell;
-  }
-
-  if (snake.y >= height) {
-    snake.y = 0;
   }
 }
 
-function drawBerry(context) {
-  context.beginPath();
-  context.fillStyle = "#9f5e7e";
-  context.arc(berrySnake.x + (cell / 2), berrySnake.y + (cell / 2), berrySnake.radiusBerry, 0, pi * 2, false);
-  context.fill();
-  context.closePath();
-}
+class Snake {
+  constructor(canvas, board) {
+    this.context = canvas.context;
+    this.cell = board.cell;
+    this.indentCell = board.indentCell;
+    this.heightGame = board.heightGame;
+    this.x = 0;
+    this.y = this.cell * 3;
+    this.dx = this.cell
+    this.dy = 0;
+    this.tails = [{ x: 0, y: this.cell * 3 }];
+    this.maxTails = 3;
+    this.keyDirection = null;
 
-function coordinatsBerry() {
-  berrySnake.x = getRandomInt(0, rowGame) * cell;
-  berrySnake.y = getRandomInt(0, columGame) * cell;
-}
+    this.handleControl = (event) => {
+      if (event.code === 'ArrowUp') {
+        if (this.keyDirection === null || this.keyDirection !== 'down') {
+          this.dx = 0;
+          this.dy = -this.cell;
+          this.keyDirection = 'up';
+        }
+      }
 
-function positionBerry() {
-  coordinatsBerry();
-  for (let elem of snake.tails) {
-    if (elem.x === berrySnake.x && elem.y === berrySnake.y) {
-      coordinatsBerry();
+      if (event.code === 'ArrowDown') {
+        if (this.keyDirection === null || this.keyDirection !== 'up') {
+          this.dx = 0;
+          this.dy = this.cell;
+          this.keyDirection = 'down';
+        }
+      }
+
+      if (event.code === 'ArrowLeft') {
+        if (this.keyDirection === null || this.keyDirection !== 'right') {
+          this.dx = -this.cell;
+          this.dy = 0;
+          this.keyDirection = 'left';
+        }
+      }
+
+      if (event.code === 'ArrowRight') {
+        if (this.keyDirection === null || this.keyDirection !== 'left') {
+          this.dx = this.cell;
+          this.dy = 0;
+          this.keyDirection = 'right';
+        }
+      }
     }
   }
 
-  for (let elem of mapLevelSnake) {
-    if (elem.x === berrySnake.x && elem.y === berrySnake.y) {
-      coordinatsBerry();
+  update(berry, board, animationStart, animationFps, animationSpeed) {
+    this.x += this.dx;
+    this.y += this.dy;
+
+    //Collision Border
+    if (this.x < 0) {
+      this.x = board.widthGame - this.cell;
+    }
+
+    if (this.x >= board.widthGame) {
+      this.x = 0;
+    }
+
+    if (this.y < 0) {
+      this.y = board.heightGame - this.cell;
+    }
+
+    if (this.y >= board.heightGame) {
+      this.y = 0;
+    }
+
+    this.tails.unshift({ x: this.x, y: this.y });
+
+    if (this.tails.length > this.maxTails) {
+      this.tails.pop();
+    }
+
+    this.crachSnake(berry, board, animationStart, animationFps);
+    this.eatSnake(berry, board, animationSpeed);
+  }
+
+  crachSnake(berry, board, animationStart, animationFps) {
+    this.tails.forEach((el, index) => {
+      for (let i = index + 1; i < this.tails.length; i++) {
+        if (el.x === this.tails[i].x && el.y === this.tails[i].y) {
+          this.deth();
+          board.zeroScore();
+          berry.newPosition(this.tails, board.barrierMap)
+
+          animationStart = 0;
+          animationFps = 300;
+
+          document.removeEventListener('keydown', this.handleControl);
+
+        }
+      }
+    });
+
+    board.barrierMap.forEach((el) => {
+      if (el.x === this.tails[0].x && el.y === this.tails[0].y) {
+        this.deth();
+        board.zeroScore();
+        berry.newPosition(this.tails, board.barrierMap);
+
+        animationStart = 0;
+        animationFps = 300;
+
+        document.removeEventListener('keydown', this.handleControl);
+      }
+    });
+  }
+
+  eatSnake(berry, board, animationSpeed) {
+    this.tails.forEach((el) => {
+      if (el.x === berry.x && el.y === berry.y) {
+        this.maxTails++;
+        board.updateScore();
+        berry.newPosition(this.tails, board.barrierMap);
+
+        animationSpeed = animationSpeed + 0.7;
+      }
+    });
+  }
+
+  draw() {
+    this.tails.forEach((el, index) => {
+      if (index == 0) {
+        this.context.fillStyle = '#333333';
+      } else {
+        this.context.fillStyle = '#555555';
+      }
+
+      this.context.fillRect(el.x, el.y, this.cell - this.indentCell, this.cell - this.indentCell);
+    });
+  }
+
+  deth() {
+    this.x = 0;
+    this.y = this.cell * 3;
+    this.dx = this.cell;
+    this.dy = 0;
+    this.tails = [{ x: 0, y: this.cell * 3 }];
+    this.maxTails = 3;
+    this.keyDirection = null;
+  }
+}
+
+class Game {
+  constructor(selectorNewGame, selectorRestart, selectorEasyLevel, selectorHardLevel, cell) {
+    this.newGameBtn = document.querySelector(selectorNewGame);
+    this.restartBtn = document.querySelector(selectorRestart);
+    this.easyLevelBtn = document.querySelector(selectorEasyLevel);
+    this.hardLevelBtn = document.querySelector(selectorHardLevel);
+    this.fps = 300;
+    this.startTime = 0;
+    this.currentTime = 0;
+    this.time = 0;
+    this.currentSecond = 0
+    this.speed = 0;
+    this.cell = cell;
+
+    this.canvas = new Canvas('.js-snake__game');
+    this.board = new Board('.js-snake', '.js-snake__score-text', this.canvas, this.cell);
+    this.berry = new Berry(this.canvas, this.board);
+    this.snake = new Snake(this.canvas, this.board);
+
+    this.gameLoopSnake = this.gameLoopSnake.bind(this);
+    this.gameLoopSnake();
+
+    this.controls();
+    this.btns();
+
+    this.berry.newPosition(this.snake.tails, this.board.barrierMap);
+  }
+
+  btns() {
+    this.newGameBtn.addEventListener('click', () => {
+      this.easyLevelBtn.removeAttribute('disabled');
+      this.hardLevelBtn.removeAttribute('disabled');
+      this.newGameBtn.setAttribute('disabled', 'disabled');
+      this.restartBtn.setAttribute('disabled', 'disabled');
+
+      document.addEventListener('keydown', this.snake.handleControl);
+    });
+
+    this.easyLevelBtn.addEventListener('click', () => {
+      this.checkLevel(this.board.barrier.levelEasy);
+    });
+
+    this.hardLevelBtn.addEventListener('click', () => {
+      this.checkLevel(this.board.barrier.levelHard);
+    });
+
+    this.restartBtn.addEventListener('click', () => {
+      //Refresh Game
+      this.snake.deth();
+      this.board.zeroScore();
+      this.berry.newPosition(this.snake.tails, this.board.barrierMap)
+
+      this.fps = 300;
+      this.startTime = 0;
+
+      document.addEventListener('keydown', this.snake.handleControl);
+    });
+  }
+
+  controls() {
+    document.addEventListener('keydown', this.snake.handleControl);
+  }
+
+  checkLevel(level) {
+    this.board.updateMap(level);
+
+    this.snake.deth();
+    this.board.zeroScore();
+    this.berry.newPosition(this.snake.tails, this.board.barrierMap)
+
+    this.fps = 300;
+    this.startTime = 0;
+
+    this.restartBtn.removeAttribute('disabled');
+    this.newGameBtn.removeAttribute('disabled');
+    this.easyLevelBtn.setAttribute('disabled', 'disabled');
+    this.hardLevelBtn.setAttribute('disabled', 'disabled');
+  }
+
+  gameLoopSnake() {
+    requestAnimationFrame(this.gameLoopSnake);
+
+    if (this.startTime === 0) {
+      this.startTime = new Date().getTime();
+    }
+
+    this.currentTime = new Date().getTime();
+    this.time = this.currentTime - this.startTime;
+    this.currentSecond = Math.floor(this.time / (this.fps - this.speed));
+
+    if (this.currentSecond > 0) {
+      this.startTime = 0;
+
+      this.canvas.context.clearRect(0, 0, this.board.widthGame, this.board.heightGame);
+
+      this.board.drawGameBoard();
+      this.berry.draw();
+      this.snake.draw();
+      this.snake.update(this.berry, this.board, this.startTime, this.fps, this.speed);
     }
   }
 }
 
-function drawScoreSnake(num) {
-  return score.textContent = `Счет: ${num}`;
-}
+const game = document.querySelector('.js-snake');
 
-function checkLevelSnake(level) {
-  mapLevelSnake = level;
-  refreshSnakeGame()
-  restartBtnSnake.removeAttribute('disabled');
-  newGameBtnSnake.removeAttribute('disabled');
-  easyLevelBtnSnake.setAttribute('disabled', 'disabled');
-  hardLevelBtnSnake.setAttribute('disabled', 'disabled');
-}
-
-function refreshSnakeGame() {
-  snake.x = 0;
-  snake.y = cell * 3;
-  snake.dx = cell;
-  snake.dy = 0;
-  snake.tails = [{ x: 0, y: cell * 3 }];
-  snake.maxTails = 3;
-
-  animationSnake.fps = 300;
-  animationSnake.startTime = 0;
-
-  snakeScore = 0;
-
-  drawScoreSnake(snakeScore);
-  positionBerry();
-}
-
-function roundCell(num, cell) {
-  return Math.round(num / cell) * cell;
+if (game !== null) {
+  new Game('.js-snake__new-game', '.js-snake__restart', '.js-snake__easy-level', '.js-snake__hard-level', 25);
 }
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
-}
-
-function controlArrows(e) {
-  if (e.code === 'ArrowUp') {
-    if (keyDirection === null || keyDirection !== 'down') {
-      snake.dx = 0;
-      snake.dy = -cell;
-      keyDirection = 'up';
-    }
-  }
-
-  if (e.code === 'ArrowDown') {
-    if (keyDirection === null || keyDirection !== 'up') {
-      snake.dx = 0;
-      snake.dy = cell;
-      keyDirection = 'down';
-    }
-  }
-
-  if (e.code === 'ArrowLeft') {
-    if (keyDirection === null || keyDirection !== 'right') {
-      snake.dx = -cell;
-      snake.dy = 0;
-      keyDirection = 'left';
-    }
-  }
-
-  if (e.code === 'ArrowRight') {
-    if (keyDirection === null || keyDirection !== 'left') {
-      snake.dx = cell;
-      snake.dy = 0;
-      keyDirection = 'right';
-    }
-  }
 }

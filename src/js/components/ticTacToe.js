@@ -1,3 +1,4 @@
+'use strict'
 class TicTacToe {
   constructor(selectorBoard, selectorText, selectorNewGame, selectorRestart, selectorEasyLevel, selectorHardLevel) {
     this.gameBoard = document.querySelector(selectorBoard);
