@@ -1,15 +1,23 @@
 'use strict'
 class Canvas {
-  constructor(canvasEl) {
-    this.canvas = document.querySelector(canvasEl);
+  constructor() {
+    this.canvas = this.createCanvas();
     this.context = this.canvas.getContext('2d');
+  }
+
+  createCanvas() {
+    const game = document.querySelector('.js-snake');
+    const canvas = document.createElement('canvas');
+    canvas.classList.add('snake__game', 'js-snake__game');
+    game.appendChild(canvas);
+    return canvas;
   }
 }
 
 class Board {
-  constructor(mainEl, scoreEl, canvas, cell) {
-    this.mainEl = document.querySelector(mainEl);
-    this.scoreEl = document.querySelector(scoreEl);
+  constructor(canvas, cell) {
+    this.mainEl = document.querySelector('.js-snake');
+    this.scoreEl = this.createScore();
 
     this.cell = cell;
     this.indentCell = 2;
@@ -54,12 +62,16 @@ class Board {
     this.drawGameBoard();
   }
 
-  updateMap(level) {
-    this.barrierMap = level;
+  createScore() {
+    const game = document.querySelector('.js-snake')
+    const score = document.createElement('p');
+    score.classList.add('snake__score-text', 'js-snake__score-text');
+    game.appendChild(score);
+    return score;
   }
 
-  updateCell(num) {
-    this.cell = num;
+  updateMap(level) {
+    this.barrierMap = level;
   }
 
   roundCell(num, cell) {
@@ -114,7 +126,7 @@ class Berry {
 
   draw() {
     this.context.beginPath();
-    this.context.fillStyle = "#9f5e7e";
+    this.context.fillStyle = "#a66210";
     this.context.arc(this.x + (this.cell / 2), this.y + (this.cell / 2), this.radius, 0, this.pi * 2);
     this.context.fill();
     this.context.closePath();
@@ -145,7 +157,7 @@ class Berry {
 }
 
 class Snake {
-  constructor(canvas, board) {
+  constructor(canvas, board, controlScreenKey) {
     this.context = canvas.context;
     this.cell = board.cell;
     this.indentCell = board.indentCell;
@@ -157,39 +169,103 @@ class Snake {
     this.tails = [{ x: 0, y: this.cell * 3 }];
     this.maxTails = 3;
     this.keyDirection = null;
+    this.controlScreenKey = controlScreenKey;
 
-    this.handleControl = (event) => {
-      if (event.code === 'ArrowUp') {
-        if (this.keyDirection === null || this.keyDirection !== 'down') {
-          this.dx = 0;
-          this.dy = -this.cell;
-          this.keyDirection = 'up';
-        }
-      }
+    this.createScreenBtns();
+    this.activeControlScreen(this.activeControlScreen);
+    this.handleControl = this.handleControl.bind(this);
+    this.handleControlScreen = this.handleControlScreen.bind(this);
+  }
 
-      if (event.code === 'ArrowDown') {
-        if (this.keyDirection === null || this.keyDirection !== 'up') {
-          this.dx = 0;
-          this.dy = this.cell;
-          this.keyDirection = 'down';
-        }
+  handleControl(event) {
+    if (event.code === 'ArrowUp') {
+      if (this.keyDirection === null || this.keyDirection !== 'down') {
+        this.dx = 0;
+        this.dy = -this.cell;
+        this.keyDirection = 'up';
       }
+    }
 
-      if (event.code === 'ArrowLeft') {
-        if (this.keyDirection === null || this.keyDirection !== 'right') {
-          this.dx = -this.cell;
-          this.dy = 0;
-          this.keyDirection = 'left';
-        }
+    if (event.code === 'ArrowDown') {
+      if (this.keyDirection === null || this.keyDirection !== 'up') {
+        this.dx = 0;
+        this.dy = this.cell;
+        this.keyDirection = 'down';
       }
+    }
 
-      if (event.code === 'ArrowRight') {
-        if (this.keyDirection === null || this.keyDirection !== 'left') {
-          this.dx = this.cell;
-          this.dy = 0;
-          this.keyDirection = 'right';
-        }
+    if (event.code === 'ArrowLeft') {
+      if (this.keyDirection === null || this.keyDirection !== 'right') {
+        this.dx = -this.cell;
+        this.dy = 0;
+        this.keyDirection = 'left';
       }
+    }
+
+    if (event.code === 'ArrowRight') {
+      if (this.keyDirection === null || this.keyDirection !== 'left') {
+        this.dx = this.cell;
+        this.dy = 0;
+        this.keyDirection = 'right';
+      }
+    }
+  }
+
+  handleControlScreen(event) {
+    if (event.target.classList.contains('js-btn__up')) {
+      if (this.keyDirection === null || this.keyDirection !== 'down') {
+        this.dx = 0;
+        this.dy = -this.cell;
+        this.keyDirection = 'up';
+      }
+    }
+
+    if (event.target.classList.contains('js-btn__down')) {
+      if (this.keyDirection === null || this.keyDirection !== 'up') {
+        this.dx = 0;
+        this.dy = this.cell;
+        this.keyDirection = 'down';
+      }
+    }
+
+    if (event.target.classList.contains('js-btn__left')) {
+      if (this.keyDirection === null || this.keyDirection !== 'right') {
+        this.dx = -this.cell;
+        this.dy = 0;
+        this.keyDirection = 'left';
+      }
+    }
+
+    if (event.target.classList.contains('js-btn__right')) {
+      if (this.keyDirection === null || this.keyDirection !== 'left') {
+        this.dx = this.cell;
+        this.dy = 0;
+        this.keyDirection = 'right';
+      }
+    }
+  }
+
+  createScreenBtns() {
+    const mainEl = document.querySelector('.js-snake');
+    mainEl.insertAdjacentHTML(
+      'beforeend',
+      `<div class="snake__box-left snake-box js-snake-box">
+        <button class="snake__control-btn js-btn__left">&#129104;</button>
+        <button class="snake__control-btn js-btn__right">&#129106;</button>
+      </div>
+
+      <div class="snake__box-right snake-box js-snake-box">
+        <button class="snake__control-btn js-btn__up">&#129105;</button>
+        <button class="snake__control-btn js-btn__down">&#129107;</button>
+      </div>`);
+  }
+
+  activeControlScreen(controlScreenKey) {
+    if (this.controlScreenKey) {
+      const boxControlEls = document.querySelectorAll('.snake-box');
+      boxControlEls.forEach((el) => {
+        el.classList.add('active');
+      });
     }
   }
 
@@ -200,17 +276,13 @@ class Snake {
     //Collision Border
     if (this.x < 0) {
       this.x = board.widthGame - this.cell;
-    }
-
-    if (this.x >= board.widthGame) {
+    } else if (this.x >= board.widthGame) {
       this.x = 0;
     }
 
     if (this.y < 0) {
       this.y = board.heightGame - this.cell;
-    }
-
-    if (this.y >= board.heightGame) {
+    } else if (this.y >= board.heightGame) {
       this.y = 0;
     }
 
@@ -228,29 +300,18 @@ class Snake {
     this.tails.forEach((el, index) => {
       for (let i = index + 1; i < this.tails.length; i++) {
         if (el.x === this.tails[i].x && el.y === this.tails[i].y) {
-          this.deth();
+          this.deth(animationStart, animationFps);
           board.zeroScore();
           berry.newPosition(this.tails, board.barrierMap)
-
-          animationStart = 0;
-          animationFps = 300;
-
-          document.removeEventListener('keydown', this.handleControl);
-
         }
       }
     });
 
     board.barrierMap.forEach((el) => {
       if (el.x === this.tails[0].x && el.y === this.tails[0].y) {
-        this.deth();
+        this.deth(animationStart, animationFps);
         board.zeroScore();
         berry.newPosition(this.tails, board.barrierMap);
-
-        animationStart = 0;
-        animationFps = 300;
-
-        document.removeEventListener('keydown', this.handleControl);
       }
     });
   }
@@ -279,7 +340,7 @@ class Snake {
     });
   }
 
-  deth() {
+  deth(animationStart, animationFps) {
     this.x = 0;
     this.y = this.cell * 3;
     this.dx = this.cell;
@@ -287,15 +348,22 @@ class Snake {
     this.tails = [{ x: 0, y: this.cell * 3 }];
     this.maxTails = 3;
     this.keyDirection = null;
+    animationStart = 0;
+    animationFps = 300;
+
+    document.removeEventListener('click', this.handleControlScreen);
+    document.removeEventListener('keydown', this.handleControl);
   }
 }
 
 class Game {
-  constructor(selectorNewGame, selectorRestart, selectorEasyLevel, selectorHardLevel, cell) {
-    this.newGameBtn = document.querySelector(selectorNewGame);
-    this.restartBtn = document.querySelector(selectorRestart);
-    this.easyLevelBtn = document.querySelector(selectorEasyLevel);
-    this.hardLevelBtn = document.querySelector(selectorHardLevel);
+  constructor(btnsMenu, activeMenuBtn, cell, controlScreenKey = false) {
+    this.newGameBtn = document.querySelector(btnsMenu.selectorNewGame);
+    this.restartBtn = document.querySelector(btnsMenu.selectorRestart);
+    this.easyLevelBtn = document.querySelector(btnsMenu.selectorEasyLevel);
+    this.hardLevelBtn = document.querySelector(btnsMenu.selectorHardLevel);
+    this.btnMenu = document.querySelector(activeMenuBtn.selectorBtnMenu);
+    this.listMenu = document.querySelector(activeMenuBtn.selectorListMenu);
     this.fps = 300;
     this.startTime = 0;
     this.currentTime = 0;
@@ -303,16 +371,15 @@ class Game {
     this.currentSecond = 0
     this.speed = 0;
     this.cell = cell;
+    this.controlScreenKey = controlScreenKey;
 
-    this.canvas = new Canvas('.js-snake__game');
-    this.board = new Board('.js-snake', '.js-snake__score-text', this.canvas, this.cell);
+    this.canvas = new Canvas();
+    this.board = new Board(this.canvas, this.cell);
     this.berry = new Berry(this.canvas, this.board);
-    this.snake = new Snake(this.canvas, this.board);
+    this.snake = new Snake(this.canvas, this.board, this.controlScreenKey);
 
     this.gameLoopSnake = this.gameLoopSnake.bind(this);
     this.gameLoopSnake();
-
-    this.controls();
     this.btns();
 
     this.berry.newPosition(this.snake.tails, this.board.barrierMap);
@@ -324,50 +391,63 @@ class Game {
       this.hardLevelBtn.removeAttribute('disabled');
       this.newGameBtn.setAttribute('disabled', 'disabled');
       this.restartBtn.setAttribute('disabled', 'disabled');
-
-      document.addEventListener('keydown', this.snake.handleControl);
     });
 
     this.easyLevelBtn.addEventListener('click', () => {
       this.checkLevel(this.board.barrier.levelEasy);
+
+      if (this.controlScreenKey) {
+        document.addEventListener('click', this.snake.handleControlScreen);
+      } else {
+        document.addEventListener('keydown', this.snake.handleControl);
+      }
+      this.activeMenu();
     });
 
     this.hardLevelBtn.addEventListener('click', () => {
       this.checkLevel(this.board.barrier.levelHard);
+
+      if (this.controlScreenKey) {
+        document.addEventListener('click', this.snake.handleControlScreen);
+      } else {
+        document.addEventListener('keydown', this.snake.handleControl);
+      }
+      this.activeMenu();
     });
 
     this.restartBtn.addEventListener('click', () => {
       //Refresh Game
-      this.snake.deth();
+      this.snake.deth(this.startTime, this.fps);
       this.board.zeroScore();
       this.berry.newPosition(this.snake.tails, this.board.barrierMap)
 
-      this.fps = 300;
-      this.startTime = 0;
-
-      document.addEventListener('keydown', this.snake.handleControl);
+      if (this.controlScreenKey) {
+        document.addEventListener('click', this.snake.handleControlScreen);
+      } else {
+        document.addEventListener('keydown', this.snake.handleControl);
+      }
+      this.activeMenu();
     });
   }
 
-  controls() {
-    document.addEventListener('keydown', this.snake.handleControl);
+  activeMenu() {
+    btnMenu.classList.toggle('active');
+    listMenu.classList.toggle('active');
   }
 
   checkLevel(level) {
     this.board.updateMap(level);
-
-    this.snake.deth();
+    this.snake.deth(this.startTime, this.fps);
     this.board.zeroScore();
     this.berry.newPosition(this.snake.tails, this.board.barrierMap)
-
-    this.fps = 300;
-    this.startTime = 0;
 
     this.restartBtn.removeAttribute('disabled');
     this.newGameBtn.removeAttribute('disabled');
     this.easyLevelBtn.setAttribute('disabled', 'disabled');
     this.hardLevelBtn.setAttribute('disabled', 'disabled');
   }
+
+
 
   gameLoopSnake() {
     requestAnimationFrame(this.gameLoopSnake);
@@ -394,9 +474,28 @@ class Game {
 }
 
 const game = document.querySelector('.js-snake');
+const btnsMenu = {
+  selectorNewGame: '.js-snake__new-game',
+  selectorRestart: '.js-snake__restart',
+  selectorEasyLevel: '.js-snake__easy-level',
+  selectorHardLevel: '.js-snake__hard-level'
+}
+
+const activeMenuBtn = {
+  selectorBtnMenu: '.js-btns-menu__icon',
+  selectorListMenu: '.js-btns-menu__list'
+}
 
 if (game !== null) {
-  new Game('.js-snake__new-game', '.js-snake__restart', '.js-snake__easy-level', '.js-snake__hard-level', 25);
+  if (window.matchMedia('(min-width: 1100px)').matches && isTouchDevice()) {
+    new Game(btnsMenu, activeMenuBtn, 25, true);
+  } else if (window.matchMedia('(max-width: 1100px)').matches) {
+    new Game(btnsMenu, activeMenuBtn, 20, true);
+  } else if (window.matchMedia('(max-width: 1100px)').matches) {
+    new Game(btnsMenu, activeMenuBtn, 15, true);
+  } else {
+    new Game(btnsMenu, activeMenuBtn, 25, false);
+  }
 }
 
 function getRandomInt(min, max) {

@@ -1,0 +1,134 @@
+@media (max-width: 1100px) {
+  .btns-menu__list {
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: block;
+    text-align: center;
+    overflow: auto;
+    padding: 70px 20px;
+    background: rgba(227, 236, 236, 0.75);
+    transform: translateX(100%);
+    transition: all 0.5s ease;
+
+    &::before {
+      content: "";
+      width: 100%;
+      height: 50px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      background: rgba(227, 236, 236, 0.9);
+      transition: all 0.5s ease;
+      transform: translateX(100%);
+      transition: all 0.5s ease;
+    }
+  }
+
+  .btns-menu__icon {
+    position: relative;
+    z-index: 15;
+    display: block;
+    height: 30px;
+    width: 40px;
+    background-color: #333;
+    padding: 10px;
+    transition: all 0.5s ease;
+
+    &::after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      border: 3px solid transparent;
+    }
+
+    & span {
+      width: 20px;
+      height: 3px;
+      display: block;
+      background-color: #fff;
+      transition: all 0.5s ease;
+    }
+
+    & span:first-child {
+      position: absolute;
+      top: 7px;
+    }
+
+    & span:last-child {
+      position: absolute;
+      bottom: 7px;
+    }
+  }
+
+  .btns-menu__list.active {
+    transform: translateX(0);
+
+    &::before {
+      transform: translateX(0);
+    }
+  }
+
+  .btns-menu__icon.active {
+    background-color: transparent;
+
+    &::after {
+      animation: active-menu 0.4s 0.25s forwards;
+    }
+
+    & span {
+      background-color: #333;
+    }
+
+    & span:first-child {
+      transform: rotate(-30deg) translateY(-50%);
+      top: 50%;
+    }
+
+    & span:last-child {
+      transform: rotate(30deg) translateY(50%);
+      bottom: 50%;
+    }
+
+    & span:nth-child(2) {
+      transform: scale(0);
+    }
+  }
+
+  .btns-menu__btn {
+    min-width: 60%;
+    padding: 10px 15px;
+    font-size: 20px;
+  }
+
+  .btns-menu__home {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 450px) {
+  .snake__control-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 27px;
+  }
+
+  .snake__control-btn {
+    &:not(:last-child) {
+      margin-bottom: 40px;
+    }
+  }
+
+  .snake__box-right {
+    right: 15px;
+  }
+
+  .snake__box-left {
+    left: 15px;
+  }
+}

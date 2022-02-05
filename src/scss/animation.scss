@@ -1,0 +1,17 @@
+@keyframes active-menu {
+  0% {
+    border-color: transparent;
+  }
+  25% {
+    border-color: transparent #333 transparent transparent;
+  }
+  50% {
+    border-color: transparent #333 #333 transparent;
+  }
+  75% {
+    border-color: transparent #333 #333 #333;
+  }
+  100% {
+    border-color: #333;
+  }
+}
