@@ -6,12 +6,6 @@ btnMenu.addEventListener('click', () => {
   listMenu.classList.toggle('active');
 });
 
-// function calculationVH() {
-//   const vh = window.innerHeight;
-//   document.documentElement.style.setProperty('--vh', `${vh}px`);
-// }
-// calculationVH();
-
 function isTouchDevice(e) {
   return typeof window.ontouchstart !== 'undefined';
 }

@@ -1,13 +1,15 @@
 'use strict'
 class TicTacToe {
-  constructor(selectorBoard, selectorText, selectorNewGame, selectorRestart, selectorEasyLevel, selectorHardLevel) {
-    this.gameBoard = document.querySelector(selectorBoard);
-    this.winText = document.querySelector(selectorText);
+  constructor(btnsMenu, activeMenuBtn) {
+    this.gameBoard = this.createElementBoard();
+    this.winText = this.createElementText();
 
-    this.newGameBtn = document.querySelector(selectorNewGame);
-    this.restartBtn = document.querySelector(selectorRestart);
-    this.easyLevelBtn = document.querySelector(selectorEasyLevel);
-    this.hardLevelBtn = document.querySelector(selectorHardLevel);
+    this.newGameBtn = document.querySelector(btnsMenu.selectorNewGame);
+    this.restartBtn = document.querySelector(btnsMenu.selectorRestart);
+    this.easyLevelBtn = document.querySelector(btnsMenu.selectorEasyLevel);
+    this.hardLevelBtn = document.querySelector(btnsMenu.selectorHardLevel);
+    this.btnMenu = document.querySelector(activeMenuBtn.selectorBtnMenu);
+    this.listMenu = document.querySelector(activeMenuBtn.selectorListMenu);
 
     this.origBoard;
     this.cells;
@@ -48,6 +50,22 @@ class TicTacToe {
     this.init();
   }
 
+  createElementBoard() {
+    const game = document.querySelector('.js-tic-tac-toe');
+    const board = document.createElement('div');
+    board.classList.add('tic-tac-toe__game', 'js-tic-tac-toe__game');
+    game.appendChild(board);
+    return board;
+  }
+
+  createElementText() {
+    const game = document.querySelector('.js-tic-tac-toe');
+    const text = document.createElement('p');
+    text.classList.add('tic-tac-toe__win-text', 'js-tic-tac-toe__win-text');
+    game.appendChild(text);
+    return text;
+  }
+
   whoWinner(who) {
     this.winText.innerText = who;
   }
@@ -66,19 +84,27 @@ class TicTacToe {
       this.hardLevelBtn.removeAttribute('disabled');
       this.newGameBtn.setAttribute('disabled', 'disabled');
       this.restartBtn.setAttribute('disabled', 'disabled');
-    })
+    });
 
     this.easyLevelBtn.addEventListener('click', () => {
       this.checkLevel('easy');
-    })
+      this.activeMenu();
+    });
 
     this.hardLevelBtn.addEventListener('click', () => {
       this.checkLevel('hard');
-    })
+      this.activeMenu();
+    });
 
     this.restartBtn.addEventListener('click', () => {
       this.start();
-    })
+      this.activeMenu();
+    });
+  }
+
+  activeMenu() {
+    btnMenu.classList.toggle('active');
+    listMenu.classList.toggle('active');
   }
 
   checkLevel(level) {
@@ -253,7 +279,18 @@ class TicTacToe {
 }
 
 const game = document.querySelector('.tic-tac-toe');
+const btnsMenu = {
+  selectorNewGame: '.js-tic-tac-toe__new-game',
+  selectorRestart: '.js-tic-tac-toe__restart',
+  selectorEasyLevel: '.js-tic-tac-toe__easy-level',
+  selectorHardLevel: '.js-tic-tac-toe__hard-level'
+}
+
+const activeMenuBtn = {
+  selectorBtnMenu: '.js-btns-menu__icon',
+  selectorListMenu: '.js-btns-menu__list'
+}
 
 if (game !== null) {
-  new TicTacToe('.js-tic-tac-toe__game', '.js-tic-tac-toe__win-text', '.js-tic-tac-toe__new-game', '.js-tic-tac-toe__restart', '.js-tic-tac-toe__easy-level', '.js-tic-tac-toe__hard-level');
+  new TicTacToe(btnsMenu, activeMenuBtn);
 }
