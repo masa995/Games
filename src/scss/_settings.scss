@@ -11,7 +11,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  color: var(--white-color);
+  color: #fff;
   font-family: "Roboto", sans-serif;
   font-size: 20px;
 }
@@ -26,17 +26,14 @@ a {
 }
 
 .visually-hidden {
-  position: absolute !important; /*удаляет элемент из потока документа*/
-
-  overflow: hidden; /*cкрывает вылезающий за границы контент*/
-  clip: rect(1px 1px 1px 1px); /*Вырезает ту часть контента, которая должна отображаться. Для IE6, IE7 */
-  clip: rect(1px, 1px, 1px, 1px); /*вырезает ту часть контента, которая должна отображаться*/
-
-  width: 1px; /*минимально возможный размер ширины (некоторые скринридеры игнорируют элементы с нулевой высотой и шириной) */
-  height: 1px; /*минимально возможный размер высоты (некоторые скринридеры игнорируют элементы с нулевой высотой и шириной) */
-  padding: 0; /*убирает отступы*/
-
-  border: 0; /*убирает границы*/
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
 }
 
 .list-reset {
