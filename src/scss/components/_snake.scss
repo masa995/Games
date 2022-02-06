@@ -16,15 +16,19 @@
   }
 
   &__control-btn {
-    background-color: #116190;
     width: 55px;
     height: 55px;
     text-align: center;
     font-size: 30px;
-    font-weight: 700;
     border: none;
     cursor: pointer;
     color: #fff;
+    background-color: #116190;
+    text-align: center;
+
+    &:not(:last-child) {
+      margin-bottom: 40px;
+    }
   }
 
   &__score-text {
@@ -59,10 +63,4 @@
   left: 35px;
   top: 50%;
   transform: translateY(-50%);
-}
-
-.snake__control-btn {
-  &:not(:last-child) {
-    margin-bottom: 40px;
-  }
 }

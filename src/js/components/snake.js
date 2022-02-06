@@ -250,13 +250,13 @@ class Snake {
     mainEl.insertAdjacentHTML(
       'beforeend',
       `<div class="snake__box-left snake-box js-snake-box">
-        <button class="snake__control-btn js-btn__left">&#129104;</button>
-        <button class="snake__control-btn js-btn__right">&#129106;</button>
+        <button class="snake__control-btn js-btn__left">&lArr;</button>
+        <button class="snake__control-btn js-btn__right">&rArr;</button>
       </div>
 
       <div class="snake__box-right snake-box js-snake-box">
-        <button class="snake__control-btn js-btn__up">&#129105;</button>
-        <button class="snake__control-btn js-btn__down">&#129107;</button>
+        <button class="snake__control-btn js-btn__up">&uArr;</button>
+        <button class="snake__control-btn js-btn__down">&dArr;</button>
       </div>`);
   }
 
