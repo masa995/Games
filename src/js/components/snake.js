@@ -25,8 +25,14 @@ class Board {
     this.context = canvas.context;
     this.canvas = canvas.canvas;
 
-    this.widthCanvas = this.mainEl.clientWidth / 2;
-    this.heightCanvas = this.mainEl.clientHeight - 300;
+
+    if (window.matchMedia('(max-width: 450px)').matches) {
+      this.heightCanvas = this.mainEl.clientHeight - 330;
+      this.widthCanvas = this.mainEl.clientWidth - 100;
+    } else {
+      this.heightCanvas = this.mainEl.clientHeight - 300;
+      this.widthCanvas = this.mainEl.clientWidth / 2;
+    }
 
     this.widthGame = this.roundCell(this.widthCanvas, this.cell);
     this.heightGame = this.roundCell(this.heightCanvas, this.cell);
@@ -251,12 +257,16 @@ class Snake {
       'beforeend',
       `<div class="snake__box-left snake-box js-snake-box">
         <button class="snake__control-btn js-btn__left">&#9668;</button>
-        <button class="snake__control-btn js-btn__right">&#9658;</button>
+        
       </div>
 
-      <div class="snake__box-right snake-box js-snake-box">
+      <div class="snake__box-center snake-box js-snake-box">
         <button class="snake__control-btn js-btn__up">&#9650;</button>
         <button class="snake__control-btn js-btn__down">&#9660;</button>
+      </div>
+      
+      <div class="snake__box-right snake-box js-snake-box">
+      <button class="snake__control-btn js-btn__right">&#9658;</button>
       </div>`);
   }
 
@@ -487,11 +497,11 @@ const activeMenuBtn = {
 }
 
 if (game !== null) {
-  if (window.matchMedia('(min-width: 1100px)').matches && isTouchDevice()) {
+  if (window.matchMedia('(min-width: 1101px)').matches && isTouchDevice()) {
     new Game(btnsMenu, activeMenuBtn, 25, true);
   } else if (window.matchMedia('(max-width: 1100px)').matches) {
     new Game(btnsMenu, activeMenuBtn, 20, true);
-  } else if (window.matchMedia('(max-width: 1100px)').matches) {
+  } else if (window.matchMedia('(max-width: 450px)').matches) {
     new Game(btnsMenu, activeMenuBtn, 15, true);
   } else {
     new Game(btnsMenu, activeMenuBtn, 25, false);

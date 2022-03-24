@@ -26,7 +26,7 @@
     text-align: center;
 
     &:not(:last-child) {
-      margin-bottom: 40px;
+      margin-bottom: 5px;
     }
   }
 
@@ -48,18 +48,23 @@
 
 .snake-box {
   position: absolute;
-
   display: none;
 }
 
-.snake__box-right {
-  right: 35px;
-  top: 50%;
-  transform: translateY(-50%);
+.snake__box-left {
+  bottom: 15px;
+  left: calc(50% - 60px);
+  transform: translateX(-50%);
 }
 
-.snake__box-left {
-  left: 35px;
-  top: 50%;
-  transform: translateY(-50%);
+.snake__box-center {
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.snake__box-right {
+  bottom: 15px;
+  left: calc(50% + 60px);
+  transform: translateX(-50%);
 }

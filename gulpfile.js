@@ -4,7 +4,9 @@ const browserSync = require('browser-sync').create();
 const fileinclude = require('gulp-file-include');
 const concat = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
-const scss = require('gulp-sass');
+const sass = require('sass');
+const gulpSass = require('gulp-sass');
+const scss = gulpSass(sass);
 const autoprefixer = require('gulp-autoprefixer');
 const cleanCSS = require('gulp-clean-css');
 const babel = require('gulp-babel');
@@ -44,7 +46,7 @@ function styles() {
 	return src('./src/scss/**/*.scss')
 		.pipe(sourcemaps.init())
 		.pipe(scss({
-			outputStyle: 'expendend'
+			outputStyle: 'expanded'
 		}))
 		.pipe(autoprefixer({
 			overrideBrowserslist: ["last 5 versions"],
@@ -62,7 +64,7 @@ function styles() {
 function stylesBuild() {
 	return src('./src/scss/**/*.scss')
 		.pipe(scss({
-			outputStyle: 'expendend'
+			outputStyle: 'expanded'
 		}))
 		.pipe(autoprefixer({
 			overrideBrowserslist: ["last 5 versions"],

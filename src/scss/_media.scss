@@ -111,6 +111,20 @@
   .btns-menu__home {
     margin-right: 0;
   }
+
+  .snake__game {
+    order: 1;
+  }
+
+  .snake__score-text {
+    margin: 0 0 25px;
+  }
+
+  .snake__control-btn {
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+  }
 }
 
 @media (max-width: 450px) {
@@ -134,15 +148,7 @@
 
   .snake__control-btn {
     &:not(:last-child) {
-      margin-bottom: 40px;
+      margin-bottom: 10px;
     }
-  }
-
-  .snake__box-right {
-    right: 15px;
-  }
-
-  .snake__box-left {
-    left: 15px;
   }
 }
